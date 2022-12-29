@@ -1,0 +1,98 @@
+{% extends 'admin/dashbase.html' %}
+
+{% block title %} Category {% endblock %}
+
+{% block body %}
+    <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+        <h2 class="text-2xl md:text-3xl text-gray-800 font-bold">Category Page</h2>
+
+        <div class="border-t border-gray-200">
+            <div class="mt-6">
+                <form method="post" action="{{ url_for('admin.admin_category_handler') }}">
+                    <div class="flex gap-5 items-center">
+                        <div class="flex-1">
+                            <!-- <label class="block text-sm font-medium mb-1" for="default">Category</label>  -->
+                            <input id="default" name="category" class="form-input w-full" placeholder="Write the product category here">
+                        </div>
+                        <div class="flex items-center">
+                            <button class="btn bg-indigo-500 hover:bg-indigo-600 text-white">Add</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="bg-white mt-5 shadow-lg rounded-sm border border-gray-200">
+            <header class="px-5 py-4">
+                <h2 class="font-semibold text-gray-800">All Categories <span class="text-gray-400 font-medium">{{ len(categories) }}</span></h2>
+            </header>
+            <div x-data="handleSelect">
+                <div class="overflow-x-auto">
+                    <table class="table-auto w-full">
+                        <thead
+                            class="text-xs font-semibold uppercase text-gray-500 bg-gray-50 border-t border-b border-gray-200">
+                            <tr>
+                                
+                                <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px">
+                                    <div class="font-semibold text-left">S/N</div>
+                                </th>
+
+                                <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                    <div class="font-semibold text-left">Category</div>
+                                </th>
+                                
+                                <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                    <span class="sr-only">Menu</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm divide-y divide-gray-200">
+                            {% for category in categories %}
+                                <tr>  
+                                    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                        <div class="font-medium text-gray-800">
+                                            {{ category.index }}
+                                        </div>
+                                    </td>
+                                    
+                                    {% if request.args['id'] and request.args['id'] == str(category.category_id) %}
+                                    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                        <form id="saveForm" class="w-full">
+                                            <input type="hidden" name="id" value="{{ category.category_id }}">
+                                            <input type="text" value="{{ category.category_name }}" name="category">
+                                        </form>
+                                    </td>
+                                    {% else %}
+                                    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                        <div class="font-medium text-gray-800">
+                                            {{ category.category_name }}
+                                        </div>
+                                    {% endif %}
+                                    </td>
+                                    
+                                    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                        {% if request.args['id'] and request.args['id'] == str(category.category_id) %}
+                                        <div class="flex items-center">
+                                            <button
+                                            form="saveForm"
+                                            formaction="{{ url_for('admin.admin_edit_category') }}"
+                                            formmethod="post"
+                                            class="btn btn-sm bg-green-500 text-white">Save</button>
+                                            <a href="{{ url_for('admin.admin_category') }}" class="btn btn-sm bg-yellow-500 text-white ml-2">Cancel</a>
+                                        </div>
+                                        {% else %}
+                                        <div class="flex items-center">
+                                            <a href="?id={{ category.category_id }}" class="btn btn-sm bg-indigo-500 text-white">Edit</a>
+                                            <a href="{{ url_for('admin.admin_delete_category', id=category.category_id) }}" class="btn btn-sm bg-red-500 text-white ml-2">Delete</a>
+                                        </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

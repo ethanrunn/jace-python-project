@@ -1,0 +1,216 @@
+{% extends 'admin/dashbase.html' %}
+
+{% block title %} Product {% endblock %}
+
+{% block body %}
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+    <h2 class="text-2xl md:text-3xl text-gray-800 font-bold">Product Page</h2>
+
+    <!-- <div class="border-t border-gray-200"></div> -->
+    <div class="mt-6">
+        <form method="post" action="{{ url_for('admin.admin_product_handler') }}">
+            <div class="">
+                    <div class="">
+                        <!-- <label class="block text-sm font-medium mb-1" for="default">Category</label> -->
+                        <input type="text" placeholder="Write the product title" id="title" class="form-input w-full mb-4" name="title">
+                        <input type="text" placeholder="Write the product ID" id="product_id" class="form-input w-full mb-4" name="product_id">
+                        <!-- <label for="category">Select the category:</label> -->
+                        <!-- <select name="category" id="category_options" class="form-select mb-4">
+                            <option value="Men's Clothing">Men's Clothing</option>
+                            <option value="Women's Clothing">Women's Clothing</option>
+                            <option value="Children's Clothing">Children's Clothing</option>
+                        </select><br> -->
+                        <input type="text" name="category" id="category" class="form-input w-full mb-4" placeholder="Write the product category">
+                        <input type="file" class="mx-4 mb-4" name="image">
+                        <textarea placeholder="Write the product description..." id="description" class="form-input w-full mb-4" name="description"></textarea>
+                        <input type="number" placeholder="Write the quantity available" id="quantity" class="form-input w-full mb-4" name="quantity">
+                        <input type="text" placeholder="Write the price" id="price" class="form-input w-full mb-6" name="price">
+                    </div> 
+                    <div class="">
+                        <button class="btn bg-indigo-500 hover:bg-indigo-600 text-white">ADD PRODUCT</button>
+                    </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="bg-white mt-5 shadow-lg rounded-sm border border-gray-200">
+        <header class="px-5 py-4">
+            <h2 class="font-semibold text-gray-800">All Products <span class="text-gray-400 font-medium">{{ len(products) }}</span></h2>
+        </header>
+        <div x-data="handleSelect">
+            <div class="overflow-x-auto">
+                <table class="table-auto w-full">
+                    <thead
+                        class="text-xs font-semibold uppercase text-gray-500 bg-gray-50 border-t border-b border-gray-200">
+                        <tr>
+                            
+                            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px">
+                                <div class="font-semibold text-left">S/N</div>
+                            </th>
+
+                            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                <div class="font-semibold text-left">Product ID</div>
+                            </th>
+
+                            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                <div class="font-semibold text-left">Title</div>
+                            </th>
+                            
+                            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                <div class="font-semibold text-left">Category</div>
+                            </th>
+
+                            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                <div class="font-semibold text-left">Image</div>
+                            </th>
+
+                            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                <div class="font-semibold text-left">Description</div>
+                            </th>
+
+                            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                <div class="font-semibold text-left">Quantity</div>
+                            </th>
+
+                            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                <div class="font-semibold text-left">Price</div>
+                            </th>
+
+                            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                <div class="font-semibold text-left">Edit Product</div>
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm divide-y divide-gray-200">
+                        {% for product in products %}
+                            <form id="saveForm"></form>
+                            <tr>
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                    <div class="font-medium text-gray-800">
+                                        {{ product.index }}
+                                    </div>
+                                </td>
+                                
+                                {% if request.args['id'] and request.args['id'] == str(product.product_id) %}
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                    <input type="hidden" name="id" value="{{ product.product_id }}">
+                                    <input type="text" value="{{ product.product_id }}" name="product_id">
+                                </td>
+                                {% else %}
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                    <div class="font-medium text-gray-800">
+                                        {{ product.product_id }}
+                                    </div>
+                                {% endif %}
+                                </td>
+
+                                {% if request.args['id'] and request.args['id'] == str(product.product_id) %}
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                    <input type="hidden" name="id" value="{{ product.product_id }}">
+                                    <input type="text" value="{{ product.title }}" name="title">
+                                </td>
+                                {% else %}
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                    <div class="font-medium text-gray-800">
+                                        {{ product.title }}
+                                    </div>
+                                {% endif %}
+                                </td>
+
+                                {% if request.args['id'] and request.args['id'] == str(product.product_id) %}
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                        <input type="hidden" name="id" value="{{ product.product_id }}">
+                                        <select name="category_options" id="category_options" class="form-select mb-4">
+                                            <option value="Men's Clothing">Men's Clothing</option>
+                                            <option value="Women's Clothing">Women's Clothing</option>
+                                            <option value="Children's Clothing">Children's Clothing</option>
+                                        </select>
+                                </td>
+                                {% else %}
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                    <div class="font-medium text-gray-800">
+                                        {{ product.category }}
+                                    </div>
+                                {% endif %}
+                                </td>
+
+                                {% if request.args['id'] and request.args['id'] == str(product.product_id) %}
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                        <input type="hidden" name="id" value="{{ product.product_id }}">
+                                        <input type="text" value="{{ product.image }}" name="image">
+                                    </td>
+                                {% else %}
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                    <div class="font-medium text-gray-800">
+                                        {{ product.image }}
+                                    </div>
+                                {% endif %}
+                                </td>
+
+                                {% if request.args['id'] and request.args['id'] == str(product.product_id) %}
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                        <input type="hidden" name="id" value="{{ product.product_id }}">
+                                        <input type="text" value="{{ product.description }}" name="description">
+                                    </td>
+                                {% else %}
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                    <div class="font-medium text-gray-800">
+                                        {{ product.description }}
+                                    </div>
+                                {% endif %}
+                                </td>
+
+                                {% if request.args['id'] and request.args['id'] == str(product.product_id) %}
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                        <input type="hidden" name="id" value="{{ product.product_id }}">
+                                        <input type="text" value="{{ product.quantity }}" name="quantity">
+                                    </td>
+                                {% else %}
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                    <div class="font-medium text-gray-800">
+                                        {{ product.quantity }}
+                                    </div>
+                                {% endif %}
+                                </td>
+
+                                {% if request.args['id'] and request.args['id'] == str(product.product_id) %}
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                        <input type="hidden" name="id" value="{{ product.product_id }}">
+                                        <input type="text" value="{{ product.price }}" name="price">
+                                    </td>
+                                {% else %}
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                    <div class="font-medium text-gray-800">
+                                        {{ product.price }}
+                                    </div>
+                                {% endif %}
+                                </td>
+                                
+                                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                    {% if request.args['id'] and request.args['id'] == str(product.product_id) %}
+                                    <div class="flex items-center">
+                                        <button
+                                        form="saveForm"
+                                        formaction="{{ url_for('admin.admin_edit_product', id=product.product_id) }}"
+                                        formmethod="post"
+                                        class="btn btn-sm bg-green-500 text-white">Save</button>
+                                        <a href="{{ url_for('admin.admin_product') }}" class="btn btn-sm bg-yellow-500 text-white ml-2">Cancel</a>
+                                    </div>
+                                    {% else %}
+                                    <div class="flex items-center">
+                                        <a href="?id={{ product.product_id }}" class="btn btn-sm bg-indigo-500 text-white">Edit</a>
+                                        <a href="{{ url_for('admin.admin_delete_product', id=product.product_id) }}" class="btn btn-sm bg-red-500 text-white ml-2">Delete</a>
+                                    </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
